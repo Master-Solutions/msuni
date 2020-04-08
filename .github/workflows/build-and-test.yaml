@@ -1,0 +1,21 @@
+name: "Build and Test"
+
+on:
+  push:
+    tags:
+      - '!refs/tags/*'
+    branches:
+      - '*'
+
+jobs:
+  build:
+    name: Build
+    runs-on: [ubuntu-latest]
+    steps:
+      - uses: actions/checkout@v1
+        with:
+          fetch-depth: 1
+      - run: yarn global add lerna
+      - run: lerna bootstrap
+      - run: yarn rebuild
+			- run: yarn test
