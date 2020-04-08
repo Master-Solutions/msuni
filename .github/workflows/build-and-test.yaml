@@ -15,7 +15,7 @@ jobs:
       - uses: actions/checkout@v1
         with:
           fetch-depth: 1
-      - run: yarn global add lerna
+      - run: npm install lerna --global
       - run: lerna bootstrap
       - run: yarn rebuild
       - run: yarn test
