@@ -9,6 +9,7 @@
     "build": "tsc -b ./packages",
     "watch": "tsc -b ./packages --watch",
     "rebuild": "yarn clean && yarn build",
+		"bootstrap": "lerna bootstrap",
     "test": "lerna run test",
     "lint": "lerna run lint --scope=@msuni/react",
     "lint-fix": "lerna run lint-fix --scope=@msuni/react",
