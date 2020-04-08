@@ -1,100 +1,96 @@
 import React from 'react';
 import { BrowserRouter, Switch, Route, Link } from 'react-router-dom';
 import { Redirect } from 'react-router';
-import {AnyConstructor, Mixin} from "../../types";
-import {IReactContextProvidersAspect} from "../Composition/ReactContextProvidersAspect";
-import ResourceInfo from "../ResourceManagement/ResourceInfo";
-import withAppRoutes from "../../utils/withAppRoutes";
-import {Context, IComponentsRegistryAspect, IResourceManagementAspect, ResourceTypes} from "../../../src";
-import {IPagesAspect} from "../Composition/PagesAspect";
+import { AnyConstructor, Mixin } from '../../types';
+import { ReactContextProvidersAspect } from '../Composition/ReactContextProvidersAspect';
+import ResourceInfo from '../ResourceManagement/ResourceInfo';
+import { withAppRoutes } from '../../utils/withAppRoutes';
+import { Context, ResourceTypes } from '../../../src';
+import { PagesAspect } from '../Composition/PagesAspect';
+import { ResourceManagementAspect } from '../ResourceManagement/ResourceManagementAspect';
+import { ComponentsRegistryAspect } from '../ComponentRegistry/ComponentsRegistryAspect';
 
-
-export interface IRoutingAspectAspect {
+export interface RouteProps {
+   path: string;
+   exact?: boolean;
+   page: string;
+   type?: string;
 }
 
-export interface IRouteProps {
-    path: string,
-    exact?: boolean,
-    page: string,
-    type?: string
+export interface RoutesProps {
+   routes: RouteProps[];
 }
 
-export interface IRoutesProps {
-    routes: IRouteProps[]
-}
+export const RoutingAspect = <
+   T extends AnyConstructor<
+      Context &
+         ResourceManagementAspect &
+         ComponentsRegistryAspect &
+         ReactContextProvidersAspect &
+         PagesAspect
+   >
+>(
+   base: T
+) => {
+   class Routing extends base {
+      constructor(...args: any[]) {
+         super(...args);
 
-export const RoutingAspectMixin =
-    <T extends AnyConstructor<
-        Context &
-        IResourceManagementAspect &
-        IComponentsRegistryAspect &
-        IReactContextProvidersAspect &
-        IPagesAspect
-        >
-    >(base : T) =>
-    {
-        class RoutingAspect extends base implements IRoutingAspectAspect {
+         this.useComponent('routing.router', BrowserRouter);
+         this.useComponent('routing.switch', Switch);
+         this.useComponent('routing.link', Link);
+         this.useComponent('routing.redirect', Redirect);
+         this.useComponent(`routing.route`, Route);
 
-            constructor(...args: any[]) {
-                super(...args);
+         this.useComponent(`routing.routes`, this.createRoutes(), [withAppRoutes]);
+      }
 
-                this.useComponent('routing.router', BrowserRouter);
-                this.useComponent('routing.switch', Switch);
-                this.useComponent('routing.link', Link);
-                this.useComponent('routing.redirect', Redirect);
-                this.useComponent(`routing.route`, Route);
+      useRoute(route: RouteProps) {
+         return this.rm.add(new ResourceInfo(route.path, ResourceTypes.routes, route));
+      }
 
-                this.useComponent(`routing.routes`, this.createRoutes(), [withAppRoutes]);
-            }
+      getRoutes() {
+         return this.rm.findByType(ResourceTypes.routes).map((ri) => ri.value);
+      }
 
-            useRoute(route: IRouteProps) {
-                return this.rm.add(new ResourceInfo(route.path, ResourceTypes.routes, route));
-            }
+      createRoute(props: RouteProps) {
+         const type = props.type;
 
-            getRoutes() {
-                return this.rm.findByType(ResourceTypes.routes).map(ri => ri.value);
-            }
+         const pageProps = this.getPage(props.page);
+         if (!pageProps) throw new Error(`Route page ${props.page} is not registered`);
 
-            createRoute(props: IRouteProps) {
-                const type = props.type;
+         const routeComponentKey = type ? `routing.${type}_route` : 'routing.route';
+         const Route = this.getComponent(routeComponentKey);
+         if (!Route)
+            throw new Error(
+               `Component '${routeComponentKey}' for route type '${type}' is not registered`
+            );
 
-                const pageProps = this.getPage(props.page);
-                if (!pageProps)
-                    throw new Error(`Route page ${props.page} is not registered`);
+         const Page = this.getComponent('page');
+         if (!Page) throw new Error(`Page component is not registered`);
 
-                const routeComponentKey = type ? `routing.${type}_route` : 'routing.route';
-                const Route = this.getComponent(routeComponentKey);
-                if (!Route)
-                    throw new Error(`Component '${routeComponentKey}' for route type '${type}' is not registered`);
+         const routeProps = {
+            key: props.path,
+            path: props.path,
+            exact: props.exact,
+         };
 
-                const Page = this.getComponent('page');
-                if (!Page)
-                    throw new Error(`Page component is not registered`);
+         return React.createElement(Route, routeProps, React.createElement(Page, pageProps));
+      }
 
-                const routeProps = {
-                    key: props.path,
-                    path: props.path,
-                    exact: props.exact
-                };
+      createRoutes() {
+         const Router = this.getComponent('routing.router');
+         const Switch = this.getComponent('routing.switch');
 
-                return React.createElement(Route, routeProps, React.createElement(Page, pageProps));
-            }
+         const Routes: React.FC<RoutesProps> = ({ routes = [] }) => {
+            const rootElements = routes.map((route: RouteProps) => this.createRoute(route));
+            return React.createElement(Router, {}, React.createElement(Switch, {}, rootElements));
+         };
+         return Routes;
+      }
+   }
 
-            createRoutes() {
-                const Router = this.getComponent('routing.router');
-                const Switch = this.getComponent('routing.switch');
+   return Routing;
+};
 
-                const Routes: React.FC<IRoutesProps> = ({routes = []}) => {
-                    const rootElements = routes.map((route: IRouteProps) => this.createRoute(route));
-                    return React.createElement(Router, {}, React.createElement(Switch, {}, rootElements));
-                };
-                return Routes;
-            }
-        }
-
-        return RoutingAspect
-    };
-
-export type RoutingAspectMixin = Mixin<typeof RoutingAspectMixin>;
-
-
+export type RoutingAspect = Mixin<typeof RoutingAspect>;

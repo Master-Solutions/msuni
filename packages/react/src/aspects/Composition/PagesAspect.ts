@@ -1,62 +1,54 @@
-import React from "react";
-import {Mixin, AnyConstructor} from "../../types";
-import Page from "./Page";
-import ResourceInfo from "../ResourceManagement/ResourceInfo";
-import {Context, IComponentsRegistryAspect, IResourceManagementAspect, ResourceTypes} from "../../../src";
-import withProps from "../../utils/withProps";
-
-
-export interface IPagesAspect {
-    usePage(page: IPageProps): ResourceInfo
-    getPage(id: string): IPageProps
-    getPages(): ResourceInfo[]
-    buildPage(id: string): React.ReactNode
-}
+import { Mixin, AnyConstructor } from '../../types';
+import { Page } from './Page';
+import ResourceInfo from '../ResourceManagement/ResourceInfo';
+import { Context, ResourceTypes } from '../../../src';
+import withProps from '../../utils/withProps';
+import { ResourceManagementAspect } from '../ResourceManagement/ResourceManagementAspect';
+import { ComponentsRegistryAspect } from '../ComponentRegistry/ComponentsRegistryAspect';
 
 export type Widget = {
-    id: string
-    region?: string
+   id: string;
+   region?: string;
+};
+
+export interface PageProps {
+   id: string;
+   name: string;
+   layout?: string;
+   widgets: (string | Widget)[];
 }
 
-export interface IPageProps {
-    id: string,
-    name: string,
-    layout?: string,
-    widgets: (string | Widget)[]
-}
+export const PagesAspect = <
+   T extends AnyConstructor<Context & ResourceManagementAspect & ComponentsRegistryAspect>
+>(
+   base: T
+) => {
+   class Pages extends base {
+      constructor(...args: any[]) {
+         super(...args);
 
-export const PagesAspectMixin =
-    <T extends AnyConstructor<Context & IResourceManagementAspect & IComponentsRegistryAspect>>(base : T) =>
-    {
-        class PagesAspect extends base implements IPagesAspect {
+         this.useComponent('page', Page);
+      }
 
-            constructor(...args: any[]) {
-                super(...args);
+      usePage(page: PageProps) {
+         return this.rm.add(new ResourceInfo(page.id, ResourceTypes.pages, page));
+      }
 
-                this.useComponent('page', Page);
-            }
+      getPage(id: string) {
+         return this.rm.findByTypeAndId(ResourceTypes.pages, id).value;
+      }
 
-            usePage(page: IPageProps) {
-                return this.rm.add(new ResourceInfo(page.id, ResourceTypes.pages, page));
-            }
+      getPages() {
+         return this.rm.findByType(ResourceTypes.pages);
+      }
 
-            getPage(id: string) {
-                return this.rm.findByTypeAndId(ResourceTypes.pages, id).value;
-            }
+      buildPage(id: string) {
+         const pageProps = this.getPage(id);
+         return withProps(pageProps)(Page);
+      }
+   }
 
-            getPages() {
-                return this.rm.findByType(ResourceTypes.pages);
-            }
+   return Pages;
+};
 
-            buildPage(id: string) {
-                const pageProps = this.getPage(id);
-                return withProps(pageProps)(Page);
-            }
-        }
-
-        return PagesAspect
-    };
-
-export type PagesAspectMixin = Mixin<typeof PagesAspectMixin>;
-
-
+export type PagesAspect = Mixin<typeof PagesAspect>;

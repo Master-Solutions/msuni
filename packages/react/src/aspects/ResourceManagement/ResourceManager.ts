@@ -1,41 +1,41 @@
-import ResourceInfo from "./ResourceInfo";
-import {Predicate} from "../../types";
+import ResourceInfo from './ResourceInfo';
+import { Predicate } from '../../types';
 
-export interface IResourceManager {
-    find(findOptions: Predicate<ResourceInfo>): ResourceInfo[]
-    findByType(type: string): ResourceInfo[]
+export interface ResourceManager {
+   find(findOptions: Predicate<ResourceInfo>): ResourceInfo[];
+   findByType(type: string): ResourceInfo[];
 
-    findOne(findOptions: Predicate<ResourceInfo>): ResourceInfo
-    findByTypeAndId(type: string, id: string): ResourceInfo
+   findOne(findOptions: Predicate<ResourceInfo>): ResourceInfo;
+   findByTypeAndId(type: string, id: string): ResourceInfo;
 
-    add(ri: ResourceInfo): ResourceInfo
+   add(ri: ResourceInfo): ResourceInfo;
 }
 
-export class ResourceManager implements IResourceManager {
-    readonly store: ResourceInfo[];
+export class ResourceManager implements ResourceManager {
+   readonly store: ResourceInfo[];
 
-    constructor() {
-        this.store = [];
-    }
+   constructor() {
+      this.store = [];
+   }
 
-    find(findOptions?: Predicate<ResourceInfo>): ResourceInfo[] {
-        return this.store.filter(findOptions);
-    }
+   find(findOptions?: Predicate<ResourceInfo>): ResourceInfo[] {
+      return this.store.filter(findOptions);
+   }
 
-    findByType(type: string): ResourceInfo[] {
-        return this.find((ri) => ri.type === type);
-    }
+   findByType(type: string): ResourceInfo[] {
+      return this.find((ri) => ri.type === type);
+   }
 
-    findOne(findOptions?: Predicate<ResourceInfo>): ResourceInfo {
-        return this.store.find(findOptions);
-    }
+   findOne(findOptions?: Predicate<ResourceInfo>): ResourceInfo {
+      return this.store.find(findOptions);
+   }
 
-    findByTypeAndId(type: string, id: string): ResourceInfo {
-        return this.findOne((ri) => ri.type === type && ri.id === id);
-    }
+   findByTypeAndId(type: string, id: string): ResourceInfo {
+      return this.findOne((ri) => ri.type === type && ri.id === id);
+   }
 
-    add(ri: ResourceInfo): ResourceInfo {
-        this.store.push(ri);
-        return ri;
-    }
+   add(ri: ResourceInfo): ResourceInfo {
+      this.store.push(ri);
+      return ri;
+   }
 }

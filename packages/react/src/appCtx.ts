@@ -1,10 +1,10 @@
-import React from "react";
-import Application from "./Application";
+import React from 'react';
+import { Application } from './Application';
 
-export interface IAppAware {
-    app: Application
+export interface AppAware {
+   app: Application;
 }
 
-const appCtx = React.createContext<Partial<IAppAware>>({});
+const appCtx = React.createContext<Partial<AppAware>>({});
 
 export default appCtx;

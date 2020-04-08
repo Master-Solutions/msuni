@@ -1,6 +1,8 @@
-import React from "react";
+import React from 'react';
 
-export interface ITestProps {
-    name?: string
+export interface TestProps {
+   name?: string;
 }
-export const Test = (props: ITestProps) => <div role="t">Test: {props.name || "default"}</div>;
+export const Test = (props: TestProps) => (
+   <div data-testid="t">Test: {props.name || 'default'}</div>
+);

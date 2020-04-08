@@ -1,11 +1,9 @@
-interface IConstructable<T> {
-    new(...args: any[]): T;
+interface Constructable<T> {
+   new (...args: any[]): T;
 }
 
-
-export interface IContextConstructor {
-    new (options: any): IContext;
+export interface ContextConstructor {
+   new (options: any): Context;
 }
 
-export interface IContext {
-}
+export interface Context {}

@@ -9,20 +9,27 @@
     "build": "tsc -b ./packages",
     "watch": "tsc -b ./packages --watch",
     "rebuild": "yarn clean && yarn build",
-    "test": "lerna run test --scope=@uni/core --scope=@uni/react",
+    "test": "lerna run test",
+    "lint": "lerna run lint --scope=@msuni/react",
+    "lint-fix": "lerna run lint-fix --scope=@msuni/react",
     "clean": "yarn run clean-dist && yarn run clean-logs",
-    "clean-dist": "rimraf packages/**/dist && rimraf packages/**/tsconfig.tsbuildinfo",
+    "clean-dist": "rimraf packages/**/dist && rimraf packages/**/*.tsbuildinfo",
     "clean-deps": "rimraf node_modules && rimraf packages/**/node_modules && rimraf yarn.lock && rimraf packages/**/yarn.lock",
     "clean-logs": "rimraf *.log && rimraf packages/**/*.log",
+		"precommit": "lerna run --concurrency 1 --stream precommit --since HEAD",
     "publish": "yarn rebuild && lerna publish"
   },
   "devDependencies": {
+    "@commitlint/cli": "^8.3.5",
+    "@commitlint/config-conventional": "^8.3.4",
+    "husky": "^4.2.3",
     "lerna": "^3.20.2",
     "rimraf": "^3.0.2"
   },
   "husky": {
     "hooks": {
-      "commit-msg": "commitlint -e $GIT_PARAMS"
+      "pre-commit": "yarn precommit",
+      "commit-msg": "commitlint -E HUSKY_GIT_PARAMS"
     }
   }
 }

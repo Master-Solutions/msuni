@@ -1,15 +1,11 @@
-export * from "./constants";
-export * from "./Context";
-export {default as Application} from "./Application";
+import appCtx from './appCtx';
 
-export * from "./aspects/ResourceManagement/ResourceManager";
-export * from "./aspects/ResourceManagement/ResourceManagementAspect";
+export * from './constants';
+export * from './Context';
+export * from './Application';
 
-export * from "./aspects/ComponentRegistry/ComponentsRegistryAspect";
-export * from "./aspects/ComponentRegistry/RComponent";
+export * from './aspects/ComponentRegistry/RComponent';
 
-
-import appCtx from "./appCtx";
 const Provider = appCtx.Provider;
 
-export {Provider}
+export { Provider };

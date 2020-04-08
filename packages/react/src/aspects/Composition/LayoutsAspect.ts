@@ -1,46 +1,41 @@
-import {Mixin, AnyConstructor} from "../../types";
-import DefaultLayout from "./DefaultLayout";
-import ResourceInfo from "../ResourceManagement/ResourceInfo";
-import {Context, IComponentsRegistryAspect, IResourceManagementAspect, ResourceTypes} from "../../../src";
+import { Mixin, AnyConstructor } from '../../types';
+import { DefaultLayout } from './DefaultLayout';
+import ResourceInfo from '../ResourceManagement/ResourceInfo';
+import { Context, ResourceTypes } from '../../../src';
+import { ComponentsRegistryAspect } from '../ComponentRegistry/ComponentsRegistryAspect';
+import { ResourceManagementAspect } from '../ResourceManagement/ResourceManagementAspect';
 
-export interface ILayoutsAspect {
-    useLayout(page: ILayoutProps): ResourceInfo
-    getLayout(id: string): ILayoutProps
-}
-
-export interface ILayoutProps {
-    id: string,
-    component: string,
-    widgets: string[]
+export interface LayoutProps {
+   id: string;
+   component: string;
+   widgets: string[];
 }
 
 const DEFAULT_LAYOUT_KEY = 'default';
 const COMPONENT_DEFAULT_LAYOUT_KEY = `layouts.${DEFAULT_LAYOUT_KEY}`;
 
-export const LayoutsAspectMixin =
-    <T extends AnyConstructor<Context & IResourceManagementAspect & IComponentsRegistryAspect>>(base : T) =>
-    {
-        class LayoutsAspect extends base implements ILayoutsAspect {
+export const LayoutsAspect = <
+   T extends AnyConstructor<Context & ResourceManagementAspect & ComponentsRegistryAspect>
+>(
+   base: T
+) => {
+   class Layouts extends base {
+      constructor(...args: any[]) {
+         super(...args);
 
-            constructor(...args: any[]) {
-                super(...args);
+         this.useComponent(COMPONENT_DEFAULT_LAYOUT_KEY, DefaultLayout);
+      }
 
-                this.useComponent(COMPONENT_DEFAULT_LAYOUT_KEY, DefaultLayout);
-            }
+      useLayout(layout: LayoutProps) {
+         return this.rm.add(new ResourceInfo(layout.id, ResourceTypes.layouts, layout));
+      }
 
-            useLayout(layout: ILayoutProps) {
-                return this.rm.add(new ResourceInfo(layout.id, ResourceTypes.layouts, layout));
-            }
+      getLayout(id: string) {
+         return this.rm.findByTypeAndId(ResourceTypes.layouts, id).value;
+      }
+   }
 
-            getLayout(id: string) {
-                return this.rm.findByTypeAndId(ResourceTypes.layouts, id).value;
-            }
+   return Layouts;
+};
 
-        }
-
-        return LayoutsAspect
-    };
-
-export type LayoutsAspectMixin = Mixin<typeof LayoutsAspectMixin>;
-
-
+export type LayoutsAspect = Mixin<typeof LayoutsAspect>;

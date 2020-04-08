@@ -1,43 +1,33 @@
-import React from "react";
-import {Mixin, AnyConstructor} from "../../types";
-import ResourceInfo from "../ResourceManagement/ResourceInfo";
-import {compose} from "recompose";
-import {Context, IResourceManagementAspect, ResourceTypes} from "../../../src";
+import React from 'react';
+import { Mixin, AnyConstructor } from '../../types';
+import ResourceInfo from '../ResourceManagement/ResourceInfo';
+import { ResourceManagementAspect } from '../ResourceManagement/ResourceManagementAspect';
+import { Context, ResourceTypes } from '../../../src';
+import { compose } from '../../utils/compose';
 
-export interface IComponentsRegistryAspect {
-    useComponent(id: string, idOrComponent: string | React.ReactNode, hocs?: any[]): ResourceInfo
-    getComponent(id: string): any
-}
+export const ComponentsRegistryAspect = <
+   T extends AnyConstructor<Context & ResourceManagementAspect>
+>(
+   base: T
+) => {
+   class ComponentsRegistry extends base {
+      useComponent(id: string, idOrComponent: string | React.ReactNode, hocs: Function[] = []) {
+         const ri = new ResourceInfo(id, ResourceTypes.components, idOrComponent, { hocs });
+         return this.rm.add(ri);
+      }
 
-export const ComponentsRegistryAspectMixin =
-    <T extends AnyConstructor<Context & IResourceManagementAspect>>(base : T) =>
-    {
-        class ComponentsRegistryAspect extends base implements IComponentsRegistryAspect {
+      getComponent(id: string) {
+         const ri = this.rm.findByTypeAndId(ResourceTypes.components, id);
+         if (!ri) throw new Error(`Component '${id}' is not registered.`);
 
-            constructor(...args: any[]) {
-                super(...args);
-            }
+         let Component = ri.value;
+         if (typeof Component === 'string') Component = this.getComponent(Component);
 
-            useComponent(id: string, idOrComponent: string | React.ReactNode, hocs: any[] = []) {
-                const ri = new ResourceInfo(id, ResourceTypes.components, idOrComponent, {hocs});
-                return this.rm.add(ri);
-            }
+         return compose(...ri.options.hocs)(Component);
+      }
+   }
 
-            getComponent(id: string) {
-                const ri = this.rm.findByTypeAndId(ResourceTypes.components, id);
-                if (!ri)
-                    throw new Error(`Component '${id}' is not registered.`);
+   return ComponentsRegistry;
+};
 
-                let Component = ri.value;
-                if (typeof Component === 'string')
-                    Component = this.getComponent(Component);
-
-                return compose(...ri.options.hocs)(Component);
-            }
-        }
-
-        return ComponentsRegistryAspect
-    };
-
-export type ComponentsRegistryAspectMixin = Mixin<typeof ComponentsRegistryAspectMixin>;
-
+export type ComponentsRegistryAspect = Mixin<typeof ComponentsRegistryAspect>;

@@ -1,38 +1,24 @@
-import {ReactContextProvidersAspectMixin} from "./aspects/Composition/ReactContextProvidersAspect";
-import {RoutingAspectMixin} from "./aspects/Routing/RoutingAspect";
-import {ComponentsRegistryAspectMixin} from "./aspects/ComponentRegistry/ComponentsRegistryAspect";
-import {ResourceManagementAspectMixin} from "./aspects/ResourceManagement/ResourceManagementAspect";
-import {Context} from "./Context";
-import {LayoutsAspectMixin} from "./aspects/Composition/LayoutsAspect";
-import {PagesAspectMixin} from "./aspects/Composition/PagesAspect";
+import { Context } from './Context';
+import { ReactContextProvidersAspect } from './aspects/Composition/ReactContextProvidersAspect';
+import { RoutingAspect } from './aspects/Routing/RoutingAspect';
+import { ComponentsRegistryAspect } from './aspects/ComponentRegistry/ComponentsRegistryAspect';
+import { ResourceManagementAspect } from './aspects/ResourceManagement/ResourceManagementAspect';
+import { LayoutsAspect } from './aspects/Composition/LayoutsAspect';
+import { PagesAspect } from './aspects/Composition/PagesAspect';
 
-
-class Application extends
-    RoutingAspectMixin(
-        PagesAspectMixin(
-            LayoutsAspectMixin(
-                ReactContextProvidersAspectMixin(
-                    ComponentsRegistryAspectMixin(
-                        ResourceManagementAspectMixin(
-                            Context
-                        )
-                    )
-                )
-            )
-        )
-    )
-{
-
-}
+export class Application extends RoutingAspect(
+   PagesAspect(
+      LayoutsAspect(
+         ReactContextProvidersAspect(ComponentsRegistryAspect(ResourceManagementAspect(Context)))
+      )
+   )
+) {}
 
 // I would prefer the following mixin syntax but TS intellisense not working with it
-// class UniReactApplication extends mix(Context).with(
-//     ResourceManagementAspectMixin,
-//     ComponentsRegistryAspectMixin
+// class Application extends mix(Context).with(
+//     ResourceManagementAspect,
+//     ComponentsRegistryAspect
 //     ...
 // ) {
 //
 // }
-
-export default Application;
-

@@ -1,25 +1,18 @@
-import {Mixin, AnyConstructor} from "../../types";
-import {IResourceManager, ResourceManager} from "./ResourceManager";
+import { Mixin, AnyConstructor } from '../../types';
+import { ResourceManager } from './ResourceManager';
 
-export interface IResourceManagementAspect {
-    rm: IResourceManager;
-}
+export const ResourceManagementAspect = <T extends AnyConstructor<object>>(base: T) => {
+   class ResourceManagement extends base {
+      readonly rm: ResourceManager;
 
-export const ResourceManagementAspectMixin =
-    <T extends AnyConstructor<object>>(base : T) =>
-    {
-        class ResourceManagementAspect extends base implements IResourceManagementAspect {
-            readonly rm: IResourceManager;
+      constructor(...args: any[]) {
+         super(...args);
 
-            constructor(...args: any[]) {
-                super(...args);
+         this.rm = new ResourceManager();
+      }
+   }
 
-                this.rm = new ResourceManager()
-            }
-        }
+   return ResourceManagement;
+};
 
-        return ResourceManagementAspect
-    };
-
-export type ResourceManagementAspectMixin = Mixin<typeof ResourceManagementAspectMixin>;
-
+export type ResourceManagementAspect = Mixin<typeof ResourceManagementAspect>;
