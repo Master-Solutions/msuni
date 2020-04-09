@@ -17,8 +17,13 @@ jobs:
         uses: actions/setup-node@v1
         with:
           node-version: 10.x
+          registry-url: 'https://registry.npmjs.org'
+          scope: '@msuni'
       - run: yarn
       - run: yarn bootstrap
       - run: yarn lint
       - run: yarn test
       - run: yarn rebuild
+      - run: yarn publish
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
