@@ -1,6 +1,6 @@
 {
   "name": "@msuni/react-ui",
-  "version": "0.2.0",
+  "version": "0.0.0",
   "description": "Uni React UI components",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
@@ -49,5 +49,9 @@
     "testPathIgnorePatterns": [
       "dist/"
     ]
-  }
+  },
+	"publishConfig": {
+		"access": "public"
+	},
+  "gitHead": "8ca6d17728d3b5bcd622516616dc3451887ad0a9"
 }
