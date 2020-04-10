@@ -1,8 +1,9 @@
 import React from 'react';
 import useApp from '../../utils/useApp';
 import { PageProps } from './PagesAspect';
+import { MPC } from './MPC';
 
-const PageHeader = ({ name }) => <h1>{name}</h1>;
+const PageTitle = ({ name }) => <h1>{name}</h1>;
 
 export const Page: React.FC<PageProps> = (props) => {
    const { app } = useApp();
@@ -10,18 +11,33 @@ export const Page: React.FC<PageProps> = (props) => {
    const layout = props.layout || 'default';
    const Layout = app.getComponent(`layouts.${layout}`);
 
-   const layoutProps = {
-      header: <PageHeader name={props.name} />,
+   const layoutPropsMap = {
+      header: ['pageTitle'],
    };
+
+   const parts = [
+      <MPC.Part id="pageTitle" key="pageTitle">
+         <PageTitle name={props.name} />
+      </MPC.Part>,
+   ];
 
    props.widgets.forEach((w) => {
       const id = typeof w === 'string' ? w : w.id;
-      const region = typeof w === 'string' ? 'children' : w.region;
-      if (!(region in layoutProps)) layoutProps[region] = [];
+      const Component = app.getComponent(id);
+      parts.push(
+         <MPC.Part id={id} key={id}>
+            <Component />
+         </MPC.Part>
+      );
 
-      const Component = typeof w === 'string' ? app.getComponent(w) : app.getComponent(w.id);
-      layoutProps[region].push(<Component key={id} />);
+      const region = typeof w === 'string' ? 'children' : w.region;
+      if (!(region in layoutPropsMap)) layoutPropsMap[region] = [];
+      layoutPropsMap[region].push(id);
    });
 
-   return <Layout {...layoutProps} />;
+   return (
+      <MPC layout={Layout} layoutPropsMap={layoutPropsMap}>
+         {parts}
+      </MPC>
+   );
 };

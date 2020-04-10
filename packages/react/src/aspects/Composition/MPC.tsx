@@ -1,33 +1,49 @@
-import React from 'react';
+import React, { ReactElement, ReactNode, ComponentType } from 'react';
 
-//
-// const Part: React.FC<{}> = (props) => {
-//   return props.children;
-// } ;
-//
-//
-// interface MPCProps {
-//   layout: React.Component,
-//   layoutPropsMap?: object
-// }
-//
-//
-// export class MPC extends React.Component<MPCProps> {
-//
-//   render() {
-//     const Layout = this.props.layout;
-//     const layoutMapping = this.props.layoutPropsMap || {};
-//     const layoutProps = {};
-//
-//     (Object.keys(layoutMapping)).forEach(pKey => {
-//       layoutProps[pKey] = this.props.children.filter(p => layoutMapping[pKey].includes(p.props.name))
-//     });
-//
-//     console.log(layoutMapping);
-//     return <Layout {...layoutProps}/>;
-//   }
-//
-// }
+interface PartProps {
+   id: string;
+   children: ReactNode;
+}
+
+export const Part: React.FC<PartProps> = (props) => {
+   return <React.Fragment>{props.children}</React.Fragment>;
+};
+
+interface MPCProps {
+   layout?: ComponentType;
+   layoutPropsMap?: object;
+   children: Array<ReactElement<PartProps>>; //ReactElement<PartProps> | Array<ReactElement<PartProps>>
+}
+
+export class MPC extends React.Component<MPCProps> {
+   static Part = Part;
+
+   render() {
+      const Layout = this.props.layout || (({ children }) => <div>{children}</div>);
+      const layoutPropsMap = this.props.layoutPropsMap || {};
+
+      const partsMap = {};
+      this.props.children.forEach((c) => (partsMap[c.props.id] = c));
+
+      const layoutProps = {};
+
+      // layoutPropsMap is a map: region => array of parts
+      // not referenced parts should go into children
+      Object.keys(layoutPropsMap).forEach((region) => {
+         layoutProps[region] = (layoutPropsMap[region] || []).map((id) => {
+            const pChildren = partsMap[id];
+            delete partsMap[id];
+            return pChildren;
+         });
+      });
+
+      if (!('children' in layoutProps)) layoutProps['children'] = [];
+
+      layoutProps['children'] = [].concat(layoutProps['children'], Object.values(partsMap));
+
+      return <Layout {...layoutProps} />;
+   }
+}
 
 // MultiPartComponent.propTypes = {
 //   layout: PropTypes.func.isRequired,

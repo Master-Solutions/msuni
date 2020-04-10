@@ -72,7 +72,6 @@ describe('Application', () => {
       const Root = app.buildRootWithElement(<Page />);
 
       const { getByTestId } = render(Root);
-      // console.log(container.innerHTML);
       expect(getByTestId('header')).toHaveTextContent('My Page');
       expect(getByTestId('main')).toHaveTextContent('Test: Main');
       expect(getByTestId('footer')).toHaveTextContent('Test: Footer');

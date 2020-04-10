@@ -5,6 +5,9 @@
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
   "module": "./dist/index.js",
+	"files": [
+		"dist/"
+	],
   "scripts": {
     "story": "start-storybook",
     "test": "jest --coverage",
@@ -19,6 +22,10 @@
   },
   "author": "x3mka",
   "license": "MIT",
+	"keywords": [
+		"universe",
+		"react"
+	],
   "dependencies": {
     "@emotion/core": "^10.0.28",
     "@emotion/styled": "^10.0.27",
