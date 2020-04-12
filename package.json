@@ -18,7 +18,7 @@
     "clean-deps": "rimraf node_modules && rimraf packages/**/node_modules && rimraf yarn.lock && rimraf packages/**/yarn.lock",
     "clean-logs": "rimraf *.log && rimraf packages/**/*.log",
 		"precommit": "lerna run --concurrency 1 --stream precommit --since HEAD",
-		"publish": "lerna publish --from-package"
+		"publish": "lerna publish from-package"
   },
   "devDependencies": {
     "@commitlint/cli": "^8.3.5",
