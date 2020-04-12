@@ -5,5 +5,5 @@ import { FlexBox } from './FlexBox';
 
 test('Renders', async () => {
    const { container } = render(<FlexBox border="2px solid blue">Test</FlexBox>);
-   expect(container.innerText).toHaveTextContent('Test');
+   expect(container).toHaveTextContent('Test');
 });

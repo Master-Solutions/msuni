@@ -1,5 +1,5 @@
 {
-  "name": "@msuni/react-ui",
+  "name": "@msuni/uni-react-ui",
   "version": "0.0.1",
   "description": "Uni React UI components",
   "main": "./dist/index.js",

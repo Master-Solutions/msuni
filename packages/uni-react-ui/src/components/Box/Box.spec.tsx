@@ -5,5 +5,5 @@ import { Box } from './Box';
 
 test('Renders', async () => {
    const { container } = render(<Box color="tomato">Just a box</Box>);
-   expect(container.innerText).toHaveTextContent('Just a box');
+   expect(container).toHaveTextContent('Just a box');
 });

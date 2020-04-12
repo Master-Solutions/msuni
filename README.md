@@ -14,7 +14,7 @@ Universe
 
 ## Commands reference
 
-- npm unpublish @msuni/react@0.1.0
-- npm unpublish @msuni/react-ui@0.1.0
+- npm unpublish @msuni/uni-react@0.1.0
+- npm unpublish @msuni/uni-react-ui@0.1.0
 - git tag -d v0.1.0
 - git push --delete origin v0.1.0
