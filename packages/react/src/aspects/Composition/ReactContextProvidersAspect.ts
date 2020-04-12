@@ -1,10 +1,11 @@
-import React, { Context as ReactContext } from 'react';
+import React, { FC, ComponentType } from 'react';
 import ResourceInfo from '../ResourceManagement/ResourceInfo';
 import { Mixin, AnyConstructor } from '../../types';
-import appCtx from '../../appCtx';
-import { Context, ResourceTypes } from '../../../src';
 import { ComponentsRegistryAspect } from '../ComponentRegistry/ComponentsRegistryAspect';
 import { ResourceManagementAspect } from '../ResourceManagement/ResourceManagementAspect';
+import { Context } from '../../Context';
+import { ResourceTypes } from '../../constants';
+import { Provider as AppProvider } from '../../appCtx';
 
 const APP_CONTEXT_KEY = 'app';
 
@@ -17,41 +18,44 @@ export const ReactContextProvidersAspect = <
       constructor(...args: any[]) {
          super(...args);
 
-         this.useReactContext(APP_CONTEXT_KEY, appCtx, { value: { app: this } });
+         this.useProvider(APP_CONTEXT_KEY, AppProvider, () => ({ value: { app: this } }));
       }
 
-      useReactContext<T>(id: string, ctx: ReactContext<T>, options: any = {}) {
-         return this.rm.add(new ResourceInfo(id, ResourceTypes.contexts, ctx, options));
+      useProvider(id: string, provider: ComponentType, mapProps = undefined) {
+         return this.rm.add(new ResourceInfo(id, ResourceTypes.providers, provider, { mapProps }));
       }
 
-      getReactContext(id: string) {
-         return this.rm.findByTypeAndId(ResourceTypes.contexts, id);
+      getProvider(id: string) {
+         return this.rm.findByTypeAndId(ResourceTypes.providers, id);
       }
 
-      getReactContexts() {
-         return this.rm.findByType(ResourceTypes.contexts);
+      getProviders() {
+         return this.rm.findByType(ResourceTypes.providers);
       }
 
-      getDefaultReactContext() {
-         return this.getReactContext(APP_CONTEXT_KEY);
+      async buildRootWithComponent(Component: ComponentType): Promise<ComponentType> {
+         // if (!React.isValidElement(el)) throw new Error(`${el} is not a valid element`);
+         const ris = this.getProviders().reverse();
+
+         const Root: React.FC<{}> = ({ children }) => {
+            let Wrapper = React.createElement(Component, {}, children);
+            ris.forEach((ri) => {
+               const props =
+                  typeof ri.options.mapProps === 'function'
+                     ? ri.options.mapProps()
+                     : ri.options.mapProps;
+               Wrapper = React.createElement(ri.value, props, Wrapper);
+            });
+            return Wrapper;
+         };
+
+         return Root;
       }
 
-      buildRootWithElement(el: any) {
-         if (!React.isValidElement(el)) throw new Error(`${el} is not a valid element`);
-         const ris = this.getReactContexts().reverse();
-         let Wrapper = el;
-
-         ris.forEach((ri) => {
-            Wrapper = React.createElement(ri.value.Provider, ri.options, Wrapper);
-         });
-
-         return Wrapper;
-      }
-
-      // id of a component or <Component />
-      buildRoot(main = 'main') {
-         const Main = React.createElement(this.getComponent(main));
-         return this.buildRootWithElement(Main);
+      // id of a component
+      async buildRoot(main = 'main'): Promise<ComponentType> {
+         const Main = this.getComponent(main);
+         return await this.buildRootWithComponent(Main);
       }
    }
 

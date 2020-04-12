@@ -5,11 +5,14 @@ import { ComponentsRegistryAspect } from './aspects/ComponentRegistry/Components
 import { ResourceManagementAspect } from './aspects/ResourceManagement/ResourceManagementAspect';
 import { LayoutsAspect } from './aspects/Composition/LayoutsAspect';
 import { PagesAspect } from './aspects/Composition/PagesAspect';
+import { StateManagementAspect } from './aspects/StateManagement/StateManagementAspect';
 
-export class Application extends RoutingAspect(
-   PagesAspect(
-      LayoutsAspect(
-         ReactContextProvidersAspect(ComponentsRegistryAspect(ResourceManagementAspect(Context)))
+export class Application extends StateManagementAspect(
+   RoutingAspect(
+      PagesAspect(
+         LayoutsAspect(
+            ReactContextProvidersAspect(ComponentsRegistryAspect(ResourceManagementAspect(Context)))
+         )
       )
    )
 ) {}

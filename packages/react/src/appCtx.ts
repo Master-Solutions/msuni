@@ -5,6 +5,7 @@ export interface AppAware {
    app: Application;
 }
 
-const appCtx = React.createContext<Partial<AppAware>>({});
+export const appCtx = React.createContext<Partial<AppAware>>({});
 
-export default appCtx;
+export const Provider = appCtx.Provider;
+export const Consumer = appCtx.Consumer;

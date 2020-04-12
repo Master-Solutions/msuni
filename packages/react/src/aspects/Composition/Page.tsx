@@ -21,19 +21,24 @@ export const Page: React.FC<PageProps> = (props) => {
       </MPC.Part>,
    ];
 
-   props.widgets.forEach((w) => {
-      const id = typeof w === 'string' ? w : w.id;
-      const Component = app.getComponent(id);
+   props.widgets.forEach((w, i) => {
+      const componentId = typeof w === 'string' ? w : w.id;
+      const id = typeof w === 'string' ? w : w.key || w.id;
+      const Component = app.getComponent(componentId);
+      const props = typeof w !== 'string' ? w.props || {} : {};
+
       parts.push(
          <MPC.Part id={id} key={id}>
-            <Component />
+            <Component {...props} />
          </MPC.Part>
       );
 
-      const region = typeof w === 'string' ? 'children' : w.region;
+      const region = typeof w === 'string' ? 'children' : w.region || 'children';
       if (!(region in layoutPropsMap)) layoutPropsMap[region] = [];
       layoutPropsMap[region].push(id);
    });
+
+   //console.log(layoutPropsMap);
 
    return (
       <MPC layout={Layout} layoutPropsMap={layoutPropsMap}>

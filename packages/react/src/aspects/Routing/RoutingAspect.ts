@@ -5,10 +5,11 @@ import { AnyConstructor, Mixin } from '../../types';
 import { ReactContextProvidersAspect } from '../Composition/ReactContextProvidersAspect';
 import ResourceInfo from '../ResourceManagement/ResourceInfo';
 import { withAppRoutes } from '../../utils/withAppRoutes';
-import { Context, ResourceTypes } from '../../../src';
 import { PagesAspect } from '../Composition/PagesAspect';
 import { ResourceManagementAspect } from '../ResourceManagement/ResourceManagementAspect';
 import { ComponentsRegistryAspect } from '../ComponentRegistry/ComponentsRegistryAspect';
+import { Context } from '../../Context';
+import { ResourceTypes } from '../../constants';
 
 export interface RouteProps {
    path: string;

@@ -2,8 +2,9 @@ import React from 'react';
 import { Mixin, AnyConstructor } from '../../types';
 import ResourceInfo from '../ResourceManagement/ResourceInfo';
 import { ResourceManagementAspect } from '../ResourceManagement/ResourceManagementAspect';
-import { Context, ResourceTypes } from '../../../src';
 import { compose } from '../../utils/compose';
+import { Context } from '../../Context';
+import { ResourceTypes } from '../../constants';
 
 export const ComponentsRegistryAspect = <
    T extends AnyConstructor<Context & ResourceManagementAspect>

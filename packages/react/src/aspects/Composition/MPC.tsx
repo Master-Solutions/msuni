@@ -23,23 +23,28 @@ export class MPC extends React.Component<MPCProps> {
       const layoutPropsMap = this.props.layoutPropsMap || {};
 
       const partsMap = {};
-      this.props.children.forEach((c) => (partsMap[c.props.id] = c));
+      const parts = this.props.children;
+      parts.forEach((p) => (partsMap[p.props.id] = p));
 
       const layoutProps = {};
+      const referencedParts = {};
 
       // layoutPropsMap is a map: region => array of parts
       // not referenced parts should go into children
       Object.keys(layoutPropsMap).forEach((region) => {
          layoutProps[region] = (layoutPropsMap[region] || []).map((id) => {
             const pChildren = partsMap[id];
-            delete partsMap[id];
+            if (!(id in referencedParts)) referencedParts[id] = true;
             return pChildren;
          });
       });
 
       if (!('children' in layoutProps)) layoutProps['children'] = [];
 
-      layoutProps['children'] = [].concat(layoutProps['children'], Object.values(partsMap));
+      layoutProps['children'] = [].concat(
+         layoutProps['children'],
+         parts.filter((p) => !referencedParts[p.props.id])
+      );
 
       return <Layout {...layoutProps} />;
    }

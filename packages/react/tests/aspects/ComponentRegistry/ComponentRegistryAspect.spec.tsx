@@ -1,9 +1,10 @@
 import '@testing-library/jest-dom/extend-expect';
 import { Test } from '../../Test';
-import { ResourceTypes, Context } from '../../../src';
 import withProps from '../../../src/utils/withProps';
 import { ResourceManagementAspect } from '../../../src/aspects/ResourceManagement/ResourceManagementAspect';
 import { ComponentsRegistryAspect } from '../../../src/aspects/ComponentRegistry/ComponentsRegistryAspect';
+import { Context } from '../../../src/Context';
+import { ResourceTypes } from '../../../src/constants';
 
 describe('ComponentRegistryAspect', () => {
    class App extends ComponentsRegistryAspect(ResourceManagementAspect(Context)) {}

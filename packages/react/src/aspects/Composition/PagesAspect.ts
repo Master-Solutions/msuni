@@ -1,21 +1,25 @@
 import { Mixin, AnyConstructor } from '../../types';
 import { Page } from './Page';
 import ResourceInfo from '../ResourceManagement/ResourceInfo';
-import { Context, ResourceTypes } from '../../../src';
 import withProps from '../../utils/withProps';
 import { ResourceManagementAspect } from '../ResourceManagement/ResourceManagementAspect';
 import { ComponentsRegistryAspect } from '../ComponentRegistry/ComponentsRegistryAspect';
+import { Context } from '../../Context';
+import { ResourceTypes } from '../../constants';
 
-export type Widget = {
+export interface Widget {
    id: string;
    region?: string;
-};
+   key?: string;
+   props?: object;
+}
 
 export interface PageProps {
    id: string;
    name: string;
    layout?: string;
    widgets: (string | Widget)[];
+   data?: object;
 }
 
 export const PagesAspect = <

@@ -1,6 +1,6 @@
 import { useContext } from 'react';
-import appCtx, { AppAware } from '../appCtx';
+import { appCtx } from '../appCtx';
 
-const useApp = () => useContext(appCtx) as AppAware;
+const useApp = () => useContext(appCtx);
 
 export default useApp;

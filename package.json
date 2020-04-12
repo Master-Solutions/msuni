@@ -11,8 +11,8 @@
     "rebuild": "yarn clean && yarn build",
 		"bootstrap": "lerna bootstrap",
     "test": "lerna run test",
-    "lint": "lerna run lint --scope=@msuni/react",
-    "lint-fix": "lerna run lint-fix --scope=@msuni/react",
+    "lint": "lerna run lint",
+    "lint-fix": "lerna run lint-fix",
     "clean": "yarn run clean-dist && yarn run clean-logs",
     "clean-dist": "rimraf packages/**/dist && rimraf packages/**/*.tsbuildinfo",
     "clean-deps": "rimraf node_modules && rimraf packages/**/node_modules && rimraf yarn.lock && rimraf packages/**/yarn.lock",
@@ -23,13 +23,27 @@
   "devDependencies": {
     "@commitlint/cli": "^8.3.5",
     "@commitlint/config-conventional": "^8.3.4",
-    "husky": "^4.2.3",
+		"@typescript-eslint/eslint-plugin": "^2.27.0",
+		"@typescript-eslint/parser": "^2.27.0",
+		"babel-eslint": "^10.1.0",
+		"eslint": "^6.8.0",
+		"eslint-config-prettier": "^6.10.1",
+		"eslint-config-react-app": "^5.2.1",
+		"eslint-plugin-flowtype": "^4.7.0",
+		"eslint-plugin-import": "^2.20.2",
+		"eslint-plugin-jsx-a11y": "^6.2.3",
+		"eslint-plugin-prettier": "^3.1.2",
+		"eslint-plugin-react": "^7.19.0",
+		"eslint-plugin-react-hooks": "^3.0.0",
+		"husky": "^4.2.5",
     "lerna": "^3.20.2",
+		"lint-staged": "^10.1.2",
+		"prettier": "^2.0.4",
     "rimraf": "^3.0.2"
   },
   "husky": {
     "hooks": {
-      "pre-commit": "yarn precommit",
+      "pre-commit": "lint-staged",
       "commit-msg": "commitlint -E HUSKY_GIT_PARAMS"
     }
   }

@@ -1,9 +1,10 @@
 import { Mixin, AnyConstructor } from '../../types';
 import { DefaultLayout } from './DefaultLayout';
 import ResourceInfo from '../ResourceManagement/ResourceInfo';
-import { Context, ResourceTypes } from '../../../src';
 import { ComponentsRegistryAspect } from '../ComponentRegistry/ComponentsRegistryAspect';
 import { ResourceManagementAspect } from '../ResourceManagement/ResourceManagementAspect';
+import { Context } from '../../Context';
+import { ResourceTypes } from '../../constants';
 
 export interface LayoutProps {
    id: string;

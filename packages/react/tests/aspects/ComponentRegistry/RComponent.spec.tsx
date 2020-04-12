@@ -2,10 +2,12 @@ import React from 'react';
 import { render, cleanup } from '@testing-library/react';
 import '@testing-library/jest-dom/extend-expect';
 import { Test } from '../../Test';
-import { Context, Provider, RComponent } from '../../../src';
 import withProps from '../../../src/utils/withProps';
 import { ComponentsRegistryAspect } from '../../../src/aspects/ComponentRegistry/ComponentsRegistryAspect';
 import { ResourceManagementAspect } from '../../../src/aspects/ResourceManagement/ResourceManagementAspect';
+import { Context } from '../../../src/Context';
+import { Provider } from '../../../src/appCtx';
+import { RComponent } from '../../../src/aspects/ComponentRegistry/RComponent';
 
 describe('RComponent', () => {
    class App extends ComponentsRegistryAspect(ResourceManagementAspect(Context)) {}

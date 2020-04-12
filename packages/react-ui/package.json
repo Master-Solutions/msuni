@@ -1,6 +1,6 @@
 {
   "name": "@msuni/react-ui",
-  "version": "0.1.0",
+  "version": "0.0.1",
   "description": "Uni React UI components",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
@@ -17,8 +17,7 @@
     "prettier": "prettier {src,tests}/**/*",
     "prettier-fix": "prettier --write {src,tests}/**/*",
     "lint": "eslint {src,tests}/**/* --ext .ts,.tsx",
-    "lint-fix": "eslint {src,tests}/**/* --ext .ts,.tsx --fix",
-    "precommit": "lint-staged"
+    "lint-fix": "eslint {src,tests}/**/* --ext .ts,.tsx --fix"
   },
   "author": "x3mka",
   "license": "MIT",
@@ -26,12 +25,14 @@
 		"universe",
 		"react"
 	],
+	"peerDependencies": {
+		"react": "^16.9.0",
+		"react-dom": "^16.9.0"
+	},
   "dependencies": {
     "@emotion/core": "^10.0.28",
     "@emotion/styled": "^10.0.27",
     "emotion-theming": "^10.0.27",
-    "react": "^16.13.1",
-    "react-dom": "^16.13.1",
     "styled-system": "^5.1.5"
   },
   "devDependencies": {
