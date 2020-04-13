@@ -6,9 +6,9 @@ export type Mixin<T extends AnyFunction> = InstanceType<ReturnType<T>>;
 export type Container<T> = { value: T };
 
 export type Tree<T> = {
-   value: T;
-   left: Tree<T>;
-   right: Tree<T>;
+	value: T;
+	left: Tree<T>;
+	right: Tree<T>;
 };
 
 export type LinkedList<T> = T & { next: LinkedList<T> };

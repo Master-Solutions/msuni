@@ -7,50 +7,50 @@ import { Context } from '../../../src/Context';
 import { ResourceTypes } from '../../../src/constants';
 
 describe('ComponentRegistryAspect', () => {
-   class App extends ComponentsRegistryAspect(ResourceManagementAspect(Context)) {}
+	class App extends ComponentsRegistryAspect(ResourceManagementAspect(Context)) {}
 
-   let app;
-   const id = 'test';
+	let app;
+	const id = 'test';
 
-   beforeEach(() => {
-      app = new App();
-   });
+	beforeEach(() => {
+		app = new App();
+	});
 
-   describe('#useComponent', () => {
-      it('can register a component', () => {
-         const ri = app.useComponent(id, Test);
+	describe('#useComponent', () => {
+		it('can register a component', () => {
+			const ri = app.useComponent(id, Test);
 
-         expect(ri.id).toBe(id);
-         expect(ri.type).toBe(ResourceTypes.components);
-         expect(ri.value).toBe(Test);
-         expect(ri.options.hocs.length).toBe(0);
-      });
+			expect(ri.id).toBe(id);
+			expect(ri.type).toBe(ResourceTypes.components);
+			expect(ri.value).toBe(Test);
+			expect(ri.options.hocs.length).toBe(0);
+		});
 
-      it('can register a component with hoc', () => {
-         const ri = app.useComponent(id, Test, [withProps({ name: 'Yo' })]);
-         expect(ri.options.hocs.length).toBe(1);
-      });
+		it('can register a component with hoc', () => {
+			const ri = app.useComponent(id, Test, [withProps({ name: 'Yo' })]);
+			expect(ri.options.hocs.length).toBe(1);
+		});
 
-      it('can register dependent component', () => {
-         app.useComponent(id, Test);
-         const ri = app.useComponent('namedTest', id, [withProps({ name: 'Yo' })]);
-         expect(ri.value).toBe(id);
-      });
-   });
+		it('can register dependent component', () => {
+			app.useComponent(id, Test);
+			const ri = app.useComponent('namedTest', id, [withProps({ name: 'Yo' })]);
+			expect(ri.value).toBe(id);
+		});
+	});
 
-   describe('#getComponent', () => {
-      it('can get registered component', () => {
-         app.useComponent(id, Test);
-         expect(app.getComponent(id)).toBe(Test);
-      });
+	describe('#getComponent', () => {
+		it('can get registered component', () => {
+			app.useComponent(id, Test);
+			expect(app.getComponent(id)).toBe(Test);
+		});
 
-      it('can get registered component with hoc', () => {
-         app.useComponent(id, Test, [withProps({ name: 'test' })]);
-         expect(app.getComponent(id)).not.toBe(Test);
-      });
+		it('can get registered component with hoc', () => {
+			app.useComponent(id, Test, [withProps({ name: 'test' })]);
+			expect(app.getComponent(id)).not.toBe(Test);
+		});
 
-      it('throws if not registered', () => {
-         expect(() => app.getComponent(id)).toThrow(`Component '${id}' is not registered.`);
-      });
-   });
+		it('throws if not registered', () => {
+			expect(() => app.getComponent(id)).toThrow(`Component '${id}' is not registered.`);
+		});
+	});
 });

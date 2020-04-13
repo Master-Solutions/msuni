@@ -10,36 +10,36 @@ import { Provider } from '../../../src/appCtx';
 import { RComponent } from '../../../src/aspects/ComponentRegistry/RComponent';
 
 describe('RComponent', () => {
-   class App extends ComponentsRegistryAspect(ResourceManagementAspect(Context)) {}
+	class App extends ComponentsRegistryAspect(ResourceManagementAspect(Context)) {}
 
-   let app;
-   const id = 'test';
+	let app;
+	const id = 'test';
 
-   beforeEach(() => {
-      app = new App();
-   });
+	beforeEach(() => {
+		app = new App();
+	});
 
-   afterEach(cleanup);
+	afterEach(cleanup);
 
-   it('can render registered component', () => {
-      app.useComponent(id, Test);
+	it('can render registered component', () => {
+		app.useComponent(id, Test);
 
-      const { getByTestId } = render(
-         <Provider value={{ app }}>
-            <RComponent id={id} />
-         </Provider>
-      );
-      expect(getByTestId('t')).toHaveTextContent('Test: default');
-   });
+		const { getByTestId } = render(
+			<Provider value={app}>
+				<RComponent id={id} />
+			</Provider>
+		);
+		expect(getByTestId('t')).toHaveTextContent('Test: default');
+	});
 
-   it('can render registered component with hoc', () => {
-      app.useComponent(id, Test, [withProps({ name: 'Yo' })]);
+	it('can render registered component with hoc', () => {
+		app.useComponent(id, Test, [withProps({ name: 'Yo' })]);
 
-      const { getByTestId } = render(
-         <Provider value={{ app }}>
-            <RComponent id={id} />
-         </Provider>
-      );
-      expect(getByTestId('t')).toHaveTextContent('Test: Yo');
-   });
+		const { getByTestId } = render(
+			<Provider value={app}>
+				<RComponent id={id} />
+			</Provider>
+		);
+		expect(getByTestId('t')).toHaveTextContent('Test: Yo');
+	});
 });

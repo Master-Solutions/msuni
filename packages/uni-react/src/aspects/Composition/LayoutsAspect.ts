@@ -1,42 +1,43 @@
 import { Mixin, AnyConstructor } from '../../types';
-import { DefaultLayout } from './DefaultLayout';
 import ResourceInfo from '../ResourceManagement/ResourceInfo';
 import { ComponentsRegistryAspect } from '../ComponentRegistry/ComponentsRegistryAspect';
 import { ResourceManagementAspect } from '../ResourceManagement/ResourceManagementAspect';
 import { Context } from '../../Context';
-import { ResourceTypes } from '../../constants';
+import { ComponentNamespaces, ResourceTypes } from '../../constants';
+import { CompositeComponentProps, CompositionAspect } from './CompositionAspect';
 
-export interface LayoutProps {
-   id: string;
-   component: string;
-   widgets: string[];
-}
-
-const DEFAULT_LAYOUT_KEY = 'default';
-const COMPONENT_DEFAULT_LAYOUT_KEY = `layouts.${DEFAULT_LAYOUT_KEY}`;
+export interface LayoutProps extends CompositeComponentProps {}
 
 export const LayoutsAspect = <
-   T extends AnyConstructor<Context & ResourceManagementAspect & ComponentsRegistryAspect>
+	T extends AnyConstructor<Context & ResourceManagementAspect & ComponentsRegistryAspect & CompositionAspect>
 >(
-   base: T
+	base: T
 ) => {
-   class Layouts extends base {
-      constructor(...args: any[]) {
-         super(...args);
+	class Layouts extends base {
+		useLayout(id: string, layout: LayoutProps) {
+			const layoutRi = new ResourceInfo(id, ResourceTypes.layouts, layout);
+			this.rm.add(layoutRi);
 
-         this.useComponent(COMPONENT_DEFAULT_LAYOUT_KEY, DefaultLayout);
-      }
+			const cc = Object.assign({}, layout);
 
-      useLayout(layout: LayoutProps) {
-         return this.rm.add(new ResourceInfo(layout.id, ResourceTypes.layouts, layout));
-      }
+			const ccId = `${ComponentNamespaces.layouts}.${id}`;
+			this.useCompositeComponent(ccId, cc);
 
-      getLayout(id: string) {
-         return this.rm.findByTypeAndId(ResourceTypes.layouts, id).value;
-      }
-   }
+			return layoutRi;
+		}
 
-   return Layouts;
+		getLayout(id: string) {
+			const ri = this.rm.findByTypeAndId(ResourceTypes.layouts, id);
+			if (!ri) throw new Error(`Layout '${id}' is not registered.`);
+			return ri.value;
+		}
+
+		getLayouts() {
+			return this.rm.findByType(ResourceTypes.layouts);
+		}
+	}
+
+	return Layouts;
 };
 
 export type LayoutsAspect = Mixin<typeof LayoutsAspect>;

@@ -1,22 +1,32 @@
 root = true
 
+### All files
 [*]
-end_of_line = lf
 charset = utf-8
-trim_trailing_whitespace = true
+end_of_line = lf
+indent_style = tab
+indent_size = 4
 insert_final_newline = true
+trim_trailing_whitespace = true
+
+### Frontend files
+[*.{css,scss,less,js,json,ts,sass,php,html,hbs,mustache,phtml,html.twig}]
+
+
+### Markdown
+[*.md]
+indent_style = space
+indent_size = 4
+trim_trailing_whitespace = false
+
+### YAML
+[*.yml]
 indent_style = space
 indent_size = 2
 
-[*.{ts,tsx}]
+### Specific files
+[{package,bower}.json]
 indent_style = space
-indent_size = 3
-
-[*.md]
-trim_trailing_whitespace = false
-
-[*.json]
-indent_style = tab
 indent_size = 2
 
 

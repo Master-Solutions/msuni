@@ -2,120 +2,112 @@ import React from 'react';
 import { render, cleanup } from '@testing-library/react';
 import '@testing-library/jest-dom/extend-expect';
 import { Test } from './Test';
-import { Application } from '../src';
-import withProps from '../src/utils/withProps';
-import { Provider } from '../src/appCtx';
-import { RComponent } from '../src/aspects/ComponentRegistry/RComponent';
+import { Application, bootstrap } from '../src';
 
 describe('Application', () => {
-   let app;
-   const id = 'test';
+	let app;
+	const id = 'test';
 
-   beforeEach(() => {
-      app = new Application();
-   });
+	beforeEach(() => {
+		app = new Application();
+	});
 
-   afterEach(cleanup);
+	afterEach(cleanup);
 
-   it('can render registered component', () => {
-      app.useComponent(id, Test);
+	describe('components', () => {
+		it('can bootstrap with custom main', async () => {
+			app.useComponent('main', Test);
 
-      const { getByTestId } = render(
-         <Provider value={{ app }}>
-            <RComponent id={id} />
-         </Provider>
-      );
-      expect(getByTestId('t')).toHaveTextContent('Test: default');
-   });
+			const Root = await bootstrap(app, { mainComponent: 'main' });
+			const { getByTestId } = render(<Root />);
 
-   it('can render registered component with hoc', () => {
-      app.useComponent(id, Test, [withProps({ name: 'Yo' })]);
+			expect(getByTestId('t')).toHaveTextContent('Test: default');
+		});
+	});
 
-      const { getByTestId } = render(
-         <Provider value={{ app }}>
-            <RComponent id={id} />
-         </Provider>
-      );
-      expect(getByTestId('t')).toHaveTextContent('Test: Yo');
-   });
+	describe('composition', () => {
+		it('can render a composite layout', async () => {
+			app.useComponent(id, Test);
+			app.useLayout('cc', {
+				parts: [
+					{ id: 'w1', componentId: id, props: { name: 'w1' } },
+					{ id: 'w2', componentId: id, props: { name: 'w2' } },
+				],
+				layout: 'default',
+				layoutPropsMap: {
+					header: ['w1'],
+				},
+			});
 
-   it('can render from root', async () => {
-      app.useComponent('main', Test);
-      const Root = await app.buildRoot();
+			const Root = await bootstrap(app, { mainComponent: 'layouts.cc' });
+			const { getByRole } = render(<Root />);
 
-      const { getByTestId } = render(<Root />);
-      expect(getByTestId('t')).toHaveTextContent('Test: default');
-   });
+			expect(getByRole('header')).toHaveTextContent('Test: w1');
+			expect(getByRole('main')).toHaveTextContent('Test: w2');
+		});
+	});
 
-   it('can render a custom layout based on default', async () => {
-      app.useComponent('layouts.mine', 'layouts.default', [
-         withProps({ header: 'Yo, header!', children: 'Yo, children!' }),
-      ]);
+	describe('pages', () => {
+		it('can render a page with default layout', async () => {
+			app.useComponent(id, Test);
 
-      const Root = await app.buildRoot('layouts.mine');
+			app.usePage('page1', {
+				name: 'My Page',
+				parts: [
+					{ id: 'test.main', componentId: id, props: { name: 'Main' } },
+					{ id: 'test.footer', componentId: id, props: { name: 'Footer' } },
+				],
+				layout: 'default',
+				layoutPropsMap: {
+					footer: ['test.footer'],
+				},
+			});
 
-      const { getByTestId } = render(<Root />);
-      expect(getByTestId('header')).toHaveTextContent('Yo, header!');
-      expect(getByTestId('main')).toHaveTextContent('Yo, children!');
-   });
+			const Root = await bootstrap(app, { mainComponent: 'pages.page1' });
 
-   it('can render a page with default layout', async () => {
-      app.useComponent(id, Test);
-      app.useComponent('test.main', id, [withProps({ name: 'Main' })]);
-      app.useComponent('test.footer', id, [withProps({ name: 'Footer' })]);
+			const { getByRole } = render(<Root />);
+			expect(getByRole('header')).toHaveTextContent('My Page');
+			expect(getByRole('main')).toHaveTextContent('Test: Main');
+			expect(getByRole('footer')).toHaveTextContent('Test: Footer');
+		});
 
-      app.usePage({
-         id: 'page1',
-         name: 'My Page',
-         widgets: ['test.main', { id: 'test.footer', region: 'footer' }],
-      });
+		it('can render page with two same widgets', async () => {
+			app.useComponent(id, Test);
 
-      const Page = app.buildPage('page1');
-      const Root = await app.buildRootWithComponent(Page);
+			app.usePage('p1', {
+				name: 'My Page',
+				parts: [
+					{ id: `${id}_1`, componentId: id },
+					{ id: `${id}_2`, componentId: id },
+				],
+				layout: 'default',
+			});
 
-      const { getByTestId } = render(<Root />);
-      expect(getByTestId('header')).toHaveTextContent('My Page');
-      expect(getByTestId('main')).toHaveTextContent('Test: Main');
-      expect(getByTestId('footer')).toHaveTextContent('Test: Footer');
-   });
+			const Root = await bootstrap(app, { mainComponent: 'pages.p1' });
+			const { getByRole } = render(<Root />);
 
-   it('can render page with router', async () => {
-      app.useComponent(id, Test);
-      app.useComponent('test.page', id, [withProps({ name: 'Page content' })]);
+			expect(getByRole('header')).toHaveTextContent('My Page');
+			expect(getByRole('main')).toHaveTextContent('Test: defaultTest: default');
+		});
+	});
 
-      app.usePage({
-         id: 'page',
-         name: 'My Page',
-         widgets: ['test.page'],
-      });
+	describe('with routing', () => {
+		it('can render default route page', async () => {
+			app.useComponent(id, Test);
 
-      app.useRoute({ path: '/', page: 'page' });
+			app.usePage('page', {
+				name: 'My Page',
+				parts: [{ id: id, props: { name: 'Page content' } }],
+				layout: 'default',
+			});
 
-      const Root = await app.buildRoot('routing.routes');
+			app.useRoute({ path: '/', page: 'page' });
 
-      const { getByTestId } = render(<Root />);
-      // console.log(container.innerHTML);
-      expect(getByTestId('header')).toHaveTextContent('My Page');
-      expect(getByTestId('main')).toHaveTextContent('Test: Page content');
-   });
+			const Root = await bootstrap(app);
 
-   it('can render page with two same widgets', async () => {
-      app.useComponent(id, Test);
-
-      app.usePage({
-         id: 'page',
-         name: 'My Page',
-         widgets: [
-            { id: id, key: `${id}_1` },
-            { id: id, key: `${id}_2` },
-         ],
-      });
-
-      app.useRoute({ path: '/', page: 'page' });
-
-      const Root = await app.buildRoot('routing.routes');
-      const { getByTestId } = render(<Root />);
-      expect(getByTestId('header')).toHaveTextContent('My Page');
-      expect(getByTestId('main')).toHaveTextContent('Test: defaultTest: default');
-   });
+			const { getByRole } = render(<Root />);
+			expect(getByRole('header')).toHaveTextContent('My Page');
+			expect(getByRole('main')).toHaveTextContent('Test: Page content');
+		});
+	});
 });

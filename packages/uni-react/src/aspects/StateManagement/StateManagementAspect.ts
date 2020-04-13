@@ -9,39 +9,39 @@ import { ReactContextProvidersAspect } from '../Composition/ReactContextProvider
 const STATE_CONTEXT_KEY = 'state';
 
 export const StateManagementAspect = <
-   T extends AnyConstructor<Context & ResourceManagementAspect & ReactContextProvidersAspect>
+	T extends AnyConstructor<Context & ResourceManagementAspect & ReactContextProvidersAspect>
 >(
-   base: T
+	base: T
 ) => {
-   class StateManagement extends base {
-      constructor(...args: any[]) {
-         super(...args);
+	class StateManagement extends base {
+		constructor(...args: any[]) {
+			super(...args);
 
-         this.useProvider(STATE_CONTEXT_KEY, StoreProvider, () => ({ store: this.buildStore() }));
-      }
+			this.useProvider(STATE_CONTEXT_KEY, StoreProvider, () => ({ store: this.buildStore() }));
+		}
 
-      useModel(id: string, model: object) {
-         return this.rm.add(new ResourceInfo(id, ResourceTypes.state, model));
-      }
+		useModel(id: string, model: object) {
+			return this.rm.add(new ResourceInfo(id, ResourceTypes.state, model));
+		}
 
-      getModel(id: string) {
-         return this.rm.findByTypeAndId(ResourceTypes.state, id);
-      }
+		getModel(id: string) {
+			return this.rm.findByTypeAndId(ResourceTypes.state, id);
+		}
 
-      getModels() {
-         return this.rm.findByType(ResourceTypes.state);
-      }
+		getModels() {
+			return this.rm.findByType(ResourceTypes.state);
+		}
 
-      buildStore() {
-         const rootModel = {};
-         this.getModels().forEach((ri) => {
-            rootModel[ri.id] = ri.value;
-         });
-         return createStore(rootModel);
-      }
-   }
+		buildStore() {
+			const rootModel = {};
+			this.getModels().forEach((ri) => {
+				rootModel[ri.id] = ri.value;
+			});
+			return createStore(rootModel);
+		}
+	}
 
-   return StateManagement;
+	return StateManagement;
 };
 
 export type StateManagementAspect = Mixin<typeof StateManagementAspect>;

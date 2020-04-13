@@ -1,28 +1,28 @@
 {
-  "name": "@msuni/root",
-  "private": true,
-  "version": "0.0.1",
-  "workspaces": [
-    "packages/*"
-  ],
-  "scripts": {
-    "build": "tsc -b ./packages",
-    "watch": "tsc -b ./packages --watch",
-    "rebuild": "yarn clean && yarn build",
+	"name": "@msuni/root",
+	"private": true,
+	"version": "0.0.1",
+	"workspaces": [
+		"packages/*"
+	],
+	"scripts": {
+		"build": "tsc -b ./packages",
+		"watch": "tsc -b ./packages --watch",
+		"rebuild": "yarn clean && yarn build",
 		"bootstrap": "lerna bootstrap",
-    "test": "lerna run test",
-    "lint": "lerna run lint",
-    "lint-fix": "lerna run lint-fix",
-    "clean": "yarn run clean-dist && yarn run clean-logs",
-    "clean-dist": "rimraf packages/**/dist && rimraf packages/**/*.tsbuildinfo",
-    "clean-deps": "rimraf node_modules && rimraf packages/**/node_modules && rimraf yarn.lock && rimraf packages/**/yarn.lock",
-    "clean-logs": "rimraf *.log && rimraf packages/**/*.log",
+		"test": "lerna run test",
+		"lint": "lerna run lint",
+		"lint-fix": "lerna run lint-fix",
+		"clean": "yarn run clean-dist && yarn run clean-logs",
+		"clean-dist": "rimraf packages/**/dist && rimraf packages/**/*.tsbuildinfo",
+		"clean-deps": "rimraf node_modules && rimraf packages/**/node_modules && rimraf yarn.lock && rimraf packages/**/yarn.lock",
+		"clean-logs": "rimraf *.log && rimraf packages/**/*.log",
 		"precommit": "lerna run --concurrency 1 --stream precommit --since HEAD",
 		"publish": "lerna publish from-package"
-  },
-  "devDependencies": {
-    "@commitlint/cli": "^8.3.5",
-    "@commitlint/config-conventional": "^8.3.4",
+	},
+	"devDependencies": {
+		"@commitlint/cli": "^8.3.5",
+		"@commitlint/config-conventional": "^8.3.4",
 		"@typescript-eslint/eslint-plugin": "^2.27.0",
 		"@typescript-eslint/parser": "^2.27.0",
 		"babel-eslint": "^10.1.0",
@@ -36,15 +36,15 @@
 		"eslint-plugin-react": "^7.19.0",
 		"eslint-plugin-react-hooks": "^3.0.0",
 		"husky": "^4.2.5",
-    "lerna": "^3.20.2",
+		"lerna": "^3.20.2",
 		"lint-staged": "^10.1.2",
 		"prettier": "^2.0.4",
-    "rimraf": "^3.0.2"
-  },
-  "husky": {
-    "hooks": {
-      "pre-commit": "lint-staged",
-      "commit-msg": "commitlint -E HUSKY_GIT_PARAMS"
-    }
-  }
+		"rimraf": "^3.0.2"
+	},
+	"husky": {
+		"hooks": {
+			"pre-commit": "lint-staged",
+			"commit-msg": "commitlint -E HUSKY_GIT_PARAMS"
+		}
+	}
 }

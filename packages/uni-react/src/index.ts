@@ -1,5 +1,6 @@
 import { useStoreState } from 'easy-peasy';
 
+export * from './utils/useApp';
 export { useStoreState };
 
 // export * from './constants';

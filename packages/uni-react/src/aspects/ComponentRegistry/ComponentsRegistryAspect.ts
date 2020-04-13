@@ -6,29 +6,25 @@ import { compose } from '../../utils/compose';
 import { Context } from '../../Context';
 import { ResourceTypes } from '../../constants';
 
-export const ComponentsRegistryAspect = <
-   T extends AnyConstructor<Context & ResourceManagementAspect>
->(
-   base: T
-) => {
-   class ComponentsRegistry extends base {
-      useComponent(id: string, idOrComponent: string | React.ReactNode, hocs: Function[] = []) {
-         const ri = new ResourceInfo(id, ResourceTypes.components, idOrComponent, { hocs });
-         return this.rm.add(ri);
-      }
+export const ComponentsRegistryAspect = <T extends AnyConstructor<Context & ResourceManagementAspect>>(base: T) => {
+	class ComponentsRegistry extends base {
+		useComponent(id: string, idOrComponent: string | React.ReactNode, hocs: Function[] = []) {
+			const ri = new ResourceInfo(id, ResourceTypes.components, idOrComponent, { hocs });
+			return this.rm.add(ri);
+		}
 
-      getComponent(id: string) {
-         const ri = this.rm.findByTypeAndId(ResourceTypes.components, id);
-         if (!ri) throw new Error(`Component '${id}' is not registered.`);
+		getComponent(id: string) {
+			const ri = this.rm.findByTypeAndId(ResourceTypes.components, id);
+			if (!ri) throw new Error(`Component '${id}' is not registered.`);
 
-         let Component = ri.value;
-         if (typeof Component === 'string') Component = this.getComponent(Component);
+			let Component = ri.value;
+			if (typeof Component === 'string') Component = this.getComponent(Component);
 
-         return compose(...ri.options.hocs)(Component);
-      }
-   }
+			return compose(...ri.options.hocs)(Component);
+		}
+	}
 
-   return ComponentsRegistry;
+	return ComponentsRegistry;
 };
 
 export type ComponentsRegistryAspect = Mixin<typeof ComponentsRegistryAspect>;

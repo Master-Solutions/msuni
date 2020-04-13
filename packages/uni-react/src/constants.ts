@@ -1,8 +1,16 @@
 export const ResourceTypes = {
-   providers: 'app.providers',
-   pages: 'app.pages',
-   layouts: 'app.layouts',
-   components: 'app.components',
-   routes: 'app.routes',
-   state: 'app.state',
+	providers: 'providers',
+	pages: 'pages',
+	layouts: 'layouts',
+	components: 'components',
+	compositeComponents: 'compositeComponents',
+	routes: 'routes',
+	state: 'state',
+};
+
+export const RootNamespace = 'uni';
+
+export const ComponentNamespaces = {
+	layouts: 'layouts',
+	pages: 'pages',
 };
