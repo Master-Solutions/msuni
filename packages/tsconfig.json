@@ -1,0 +1,7 @@
+{
+  "files": [],
+  "references": [
+    { "path": "./uni-react/tsconfig.build.json" },
+    { "path": "./uni-react-ui/tsconfig.build.json" }
+  ]
+}
