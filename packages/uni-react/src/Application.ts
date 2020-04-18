@@ -8,8 +8,8 @@ import { PagesAspect } from './aspects/Composition/PagesAspect';
 import { StateManagementAspect } from './aspects/StateManagement/StateManagementAspect';
 import { DefaultLayout } from './aspects/Composition/DefaultLayout';
 import { ComponentNamespaces } from './constants';
-import { EmptyLayout } from './components/EmptyLayout';
 import { CompositionAspect } from './aspects/Composition/CompositionAspect';
+import { EmptyLayout } from './components/EmptyLayout';
 
 export class Application extends StateManagementAspect(
 	RoutingAspect(

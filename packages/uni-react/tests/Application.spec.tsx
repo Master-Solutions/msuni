@@ -45,6 +45,27 @@ describe('Application', () => {
 			expect(getByRole('header')).toHaveTextContent('Test: w1');
 			expect(getByRole('main')).toHaveTextContent('Test: w2');
 		});
+
+		// it('parent props propagated', async () => {
+		// 	app.useComponent(id, Test);
+		// 	app.useCompositeComponent('cc', {
+		// 		parts: [
+		// 			{ id: 'w1', componentId: id, props: { name: 'w1' } },
+		// 		],
+		// 		layout: 'default',
+		// 		layoutPropsMap: {
+		// 			header: ['w1'],
+		// 		},
+		// 	});
+		//
+		// 	const cc = app.getComponent('cc');
+		// 	app.useComponent('cc1', cc, [withProps({footer: <div>123</div>})]);
+		//
+		// 	const Root = await bootstrap(app, { mainComponent: 'cc1' });
+		// 	const { getByRole } = render(<Root />);
+		//
+		// 	expect(getByRole('footer')).toHaveTextContent('123');
+		// });
 	});
 
 	describe('pages', () => {

@@ -5,9 +5,9 @@
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
   "module": "./dist/index.js",
-	"files": [
-		"dist/"
-	],
+  "files": [
+    "dist/"
+  ],
   "scripts": {
     "story": "start-storybook",
     "test": "jest --coverage",
@@ -17,19 +17,21 @@
     "prettier": "prettier {src,tests}/**/*",
     "prettier-fix": "prettier --write {src,tests}/**/*",
     "lint": "eslint {src,tests}/**/* --ext .ts,.tsx",
-    "lint-fix": "eslint {src,tests}/**/* --ext .ts,.tsx --fix"
+    "lint-fix": "eslint {src,tests}/**/* --ext .ts,.tsx --fix",
+    "build-docs": "build-storybook -c .storybook -o ../../docs/uni-react-ui"
   },
   "author": "x3mka",
   "license": "MIT",
-	"keywords": [
-		"universe",
-		"react"
-	],
-	"peerDependencies": {
-		"react": "^16.9.0",
-		"react-dom": "^16.9.0"
-	},
+  "keywords": [
+    "universe",
+    "react"
+  ],
+  "peerDependencies": {
+    "react": "^16.9.0",
+    "react-dom": "^16.9.0"
+  },
   "dependencies": {
+    "@chakra-ui/core": "^0.7.0",
     "@emotion/core": "^10.0.28",
     "@emotion/styled": "^10.0.27",
     "emotion-theming": "^10.0.27",

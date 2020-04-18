@@ -1,12 +1,9 @@
-name: "Build and Test"
+name: "Build and Deploy"
 
 on:
   push:
     tags:
-      - '!refs/tags/*'
-    branches:
-      - 'dev'
-      - 'feat-*'
+      - 'refs/tags/*'
 
 jobs:
   build:
@@ -25,3 +22,6 @@ jobs:
       - run: yarn lint
       - run: yarn test
       - run: yarn rebuild
+      - run: yarn run publish
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}

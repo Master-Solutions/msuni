@@ -16,7 +16,8 @@
 		"prettier": "prettier {src,tests}/**/*",
 		"prettier-fix": "prettier --write {src,tests}/**/*",
 		"lint": "eslint {src,tests}/**/* --ext .ts,.tsx",
-		"lint-fix": "eslint {src,tests}/**/* --ext .ts,.tsx --fix"
+		"lint-fix": "eslint {src,tests}/**/* --ext .ts,.tsx --fix",
+    "build-docs": "echo 'no docs here yet'"
 	},
 	"author": "x3mka",
 	"license": "MIT",

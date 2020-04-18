@@ -16,7 +16,7 @@ export interface Part {
 export interface CompositeComponentProps {
 	parts: (string | Part)[];
 	layout: string;
-	layoutPropsMap?: object;
+	layoutPropsMap?: { [key: string]: string[] };
 }
 
 export interface CompositionAspectOptions {
@@ -51,7 +51,7 @@ export const CompositionAspect = <
 			const layoutPropsMap = cc.layoutPropsMap;
 			const ccProps = { layout, layoutPropsMap };
 
-			return () => {
+			return (props) => {
 				const parts = cc.parts.map((p) => {
 					const id = typeof p === 'string' ? p : p.id;
 					const componentId = typeof p === 'string' ? p : p.componentId || p.id;

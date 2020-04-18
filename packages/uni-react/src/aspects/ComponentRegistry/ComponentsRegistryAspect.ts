@@ -13,14 +13,16 @@ export const ComponentsRegistryAspect = <T extends AnyConstructor<Context & Reso
 			return this.rm.add(ri);
 		}
 
-		getComponent(id: string) {
+		getComponent(id: string, hocs: Function[] = []) {
 			const ri = this.rm.findByTypeAndId(ResourceTypes.components, id);
 			if (!ri) throw new Error(`Component '${id}' is not registered.`);
 
 			let Component = ri.value;
 			if (typeof Component === 'string') Component = this.getComponent(Component);
 
-			return compose(...ri.options.hocs)(Component);
+			const cHocs = [].concat(ri.options.hocs, hocs);
+
+			return compose(...cHocs)(Component);
 		}
 	}
 
