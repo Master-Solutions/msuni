@@ -1,7 +1,7 @@
 import React from 'react';
 import { storiesOf } from '@storybook/react';
 
-import { ThemeProvider, theme } from '@chakra-ui/core';
+import { ThemeProvider, theme, CSSReset, Flex, Box, Grid } from '@chakra-ui/core';
 import { Shell } from './Shell';
 import { Brand } from './Brand/Brand';
 import { Menu } from './Menu/Menu';
@@ -31,11 +31,11 @@ const customTheme = {
 	},
 };
 
-// console.dir(theme);
+// console.dir(customTheme);
 
-const SidebarMenu = () => {
+const SidebarMenu = ({palette = 'main', colorLevel = 600}) => {
 	return (
-		<Menu>
+		<Menu palette={palette} colorLevel={colorLevel}>
 			<MenuSection name="dashboards" title="Dashboards">
 				<MenuSubSection name="ss1" title="Sub Section 1" icon="star">
 					<MenuItem name="page1" title="Page 1" icon="external-link" />
@@ -89,52 +89,7 @@ storiesOf('Shell & Menu', module).add('Default', () => (
 			footerCenter="Footer Center"
 			footerRight="Footer Right">
 			<div>
-				Main
-				<br />
-				Main
-				<br />
-				Main
-				<br />
-				Main
-				<br />
-				Main
-				<br />
-				Main
-				<br />
-				Main
-				<br />
-				Main
-				<br />
-				Main
-				<br />
-				Main
-				<br />
-				Main
-				<br />
-				Main
-				<br />
-				Main
-				<br />
-				Main
-				<br />
-				Main
-				<br />
-				Main
-				<br />
-				Main
-				<br />
-				Main
-				<br />
-				Main
-				<br />
-				Main
-				<br />
-				Main
-				<br />
-				Main
-				<br />
-				Main
-				<br />
+
 				Main
 				<br />
 				Main
@@ -169,5 +124,18 @@ storiesOf('Shell & Menu', module).add('Default', () => (
 				<br />
 			</div>
 		</Shell>
+	</ThemeProvider>
+)).add('Menus', () => (
+	<ThemeProvider theme={customTheme}>
+		<CSSReset />
+		<Grid gap={1} templateColumns="repeat(7, 200px)" m={1}>
+			<SidebarMenu />
+			<SidebarMenu palette="orange"  />
+			<SidebarMenu palette="red" />
+			<SidebarMenu palette="green" />
+			<SidebarMenu palette="blue" />
+			<SidebarMenu palette="cyan" />
+			<SidebarMenu palette="purple" />
+		</Grid>
 	</ThemeProvider>
 ));

@@ -4,7 +4,7 @@
 	"description": "Universe React",
 	"main": "./dist/index.js",
 	"types": "./dist/index.d.ts",
-	"module": "./dist/index.js",
+	"module": "./dist/index.esm.js",
 	"files": [
 		"dist/"
 	],
@@ -12,12 +12,13 @@
 		"test": "jest --coverage",
 		"test-watch": "jest --watch",
 		"build": "tsc --build tsconfig.build.json",
+    "build1": "rollup -c rollup.config.ts",
 		"watch": "tsc --build tsconfig.build.json --watch",
 		"prettier": "prettier {src,tests}/**/*",
 		"prettier-fix": "prettier --write {src,tests}/**/*",
 		"lint": "eslint {src,tests}/**/* --ext .ts,.tsx",
 		"lint-fix": "eslint {src,tests}/**/* --ext .ts,.tsx --fix",
-    "build-docs": "echo 'no docs here yet'"
+		"build-docs": "echo 'no docs here yet'"
 	},
 	"author": "x3mka",
 	"license": "MIT",
@@ -50,6 +51,13 @@
 		"@types/storybook__react": "^5.2.1",
 		"babel-loader": "^8.1.0",
 		"jest": "^25.2.3",
+		"lodash.camelcase": "^4.3.0",
+		"rollup": "^2.8.2",
+		"rollup-plugin-commonjs": "^10.1.0",
+		"rollup-plugin-json": "^4.0.0",
+		"rollup-plugin-node-resolve": "^5.2.0",
+		"rollup-plugin-sourcemaps": "^0.6.1",
+		"rollup-plugin-typescript2": "^0.27.0",
 		"ts-jest": "^25.2.1",
 		"typescript": "~3.7.2",
 		"webpack": "^4.42.1"

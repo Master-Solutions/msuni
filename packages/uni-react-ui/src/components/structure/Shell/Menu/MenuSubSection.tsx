@@ -1,9 +1,10 @@
-import React, { useState } from 'react';
+import React, { useContext, useState } from 'react';
 import { Flex, Box, useTheme } from '@chakra-ui/core';
 import styled from '@emotion/styled';
 import { MenuItemType } from './menuTypes';
 import { MenuIcon } from './MenuIcon';
 import { MenuItemCompositeContainer } from './helpers/MenuItemCompositeContainer';
+import { MenuContext } from './Menu';
 
 type MenuSectionProps = MenuItemType & {
 	expanded?: boolean;
@@ -12,13 +13,18 @@ type MenuSectionProps = MenuItemType & {
 	theme?: object;
 };
 
-const ItemTitleContainer = styled.div`
+interface ItemTitleContainerProps {
+	hoverBgColor: string
+}
+
+const ItemTitleContainer = styled.div<ItemTitleContainerProps>`
 	display: flex;
 	align-items: center;
 	justify-content: space-between;
 	width: 100%;
+	color: #ffffffcc;
 	&:hover {
-		background-color: ${(props) => props.theme['colors']['main']['700']};
+		background-color: ${props => props.hoverBgColor};
 		cursor: pointer;
 	}
 `;
@@ -32,18 +38,23 @@ const Title = styled(Box)({
 
 export const MenuSubSection: React.FC<MenuSectionProps> = (props) => {
 	const theme = useTheme();
-	const icon = props.expanded ? 'chevron-down' : 'chevron-right';
+	const {palette, colorLevel, getItemState, setItemState} = useContext(MenuContext);
+
+	const itemState = getItemState(props.name) as any;
+	const expanded = itemState.expanded ;
+
+	const icon = expanded ? 'chevron-down' : 'chevron-right';
 	const expandable = props.expandable !== false;
 
-	const toggle = () => (expandable ? props.setExpanded(!props.expanded) : () => undefined);
+	const toggle = () => (expandable ? setItemState(props.name, {expanded: !expanded}) : () => undefined);
 
-	const backgroundColor = props.expanded ? theme['colors']['main']['700'] : 'inherit';
+	const backgroundColor = expanded ? theme['colors'][palette][colorLevel + 100] : 'inherit';
 
 	return (
 		<MenuItemCompositeContainer
 			style={{ backgroundColor }}
-			titleTemplate={
-				<ItemTitleContainer onClick={toggle}>
+			title={
+				<ItemTitleContainer onClick={toggle} hoverBgColor={backgroundColor}>
 					<Flex alignItems="center">
 						<MenuIcon icon={props.icon} size="12px" ml="25px" />
 						<Title ml="10px">{props.title}</Title>
